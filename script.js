@@ -223,7 +223,7 @@ function addNewPlaylist(event) {
   pElement.textContent = name;
   newPlaylist.appendChild(pElement);
 
-  // Create the <i> element for the icon (Font Awesome home icon)
+  // Create the <i> element for the icon
   const iconElement = document.createElement("i");
   iconElement.classList.add("fas", "fa-xmark", "delete-playlist");
   newPlaylist.appendChild(iconElement);

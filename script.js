@@ -17,6 +17,10 @@ const newPlaylistNameBtn = document.getElementById("submit-button");
 const allPlayListEl = document.getElementById("all-playlist");
 const currentPlaylistEl = document.getElementById("current-playlist");
 const addToPlaylistBtn = document.getElementById("add-to-playlist");
+const toggleSwitch = document.querySelector("input[type='checkbox']");
+const nav = document.getElementById("nav");
+const toggleIcon = document.getElementById("toggle-icon");
+const footer = document.getElementById("footer");
 
 // Music
 const songs = [
@@ -254,35 +258,194 @@ allPlayListEl.addEventListener("click", (event) => {
 // Initial load of all songs
 loadAllSongs();
 
-document.addEventListener("DOMContentLoaded", () => {
-  const allPlayListEl = document.getElementById("all-playlist");
-  const addToPlaylistBtn = document.getElementById("add-to-playlist");
-  let playlistDivs; // Define playlistDivs in a scope accessible to both event listeners
+const playlistSongsMap = new Map();
 
-  allPlayListEl.addEventListener("click", (event) => {
-    playlistDivs = document.querySelectorAll(".playlist"); // Update playlistDivs on click
-    if (event.target.classList.contains("playlist")) {
-      const clickedEl = event.target;
-      // Check if the clicked playlist does not have the 'active' class
-      if (!clickedEl.classList.contains("active")) {
-        // Remove 'active' class from all playlist divs
-        playlistDivs.forEach((div) => div.classList.remove("active"));
-        // Add 'active' class to the clicked playlist div
-        clickedEl.classList.add("active");
-      }
+// Function to play the selected song
+const playSelectedSong = (song) => {
+  songIndex = songs.findIndex((s) => s.name === song.name);
+  loadSong(songs[songIndex]);
+  playSong();
+};
+
+// Function to handle playlist click
+const handlePlaylistClick = (event) => {
+  playlistDivs = document.querySelectorAll(".playlist");
+  const clickedEl = event.target;
+
+  if (clickedEl.classList.contains("playlist")) {
+    if (!clickedEl.classList.contains("active")) {
+      deactivateAllPlaylists();
+      activatePlaylist(clickedEl);
+      showPlaylistSongs(clickedEl);
     }
-  });
+  }
+};
 
-  addToPlaylistBtn.addEventListener("click", () => {
-    playlistDivs.forEach((div) => {
-      if (div.classList.contains("active")) {
-        const addNewSong = document.createElement("div");
-        const currentSong = songs[songIndex];
-        addNewSong.innerHTML = `<h3>${currentSong.displayName}</h3>`;
-        // Append addNewSong to a container element in your DOM
-        const playlistContainer = document.getElementById("current-playlist");
-        playlistContainer.appendChild(addNewSong);
+// Function to deactivate all playlists
+const deactivateAllPlaylists = () => {
+  playlistDivs.forEach((div) => div.classList.remove("active"));
+};
+
+// Function to activate the selected playlist
+const activatePlaylist = (playlist) => {
+  playlist.classList.add("active");
+};
+
+// Function to display songs in the selected playlist
+const showPlaylistSongs = (playlist) => {
+  const playlistContainer = document.getElementById("current-playlist");
+  playlistContainer.innerHTML = "<h3>Current Playlist</h3>";
+
+  const songs = playlistSongsMap.get(playlist) || [];
+  songs.forEach((song) => {
+    const songDiv = document.createElement("div");
+    songDiv.classList.add("playlist");
+    songDiv.innerHTML = `<h3>${song.displayName}</h3>`;
+
+    // Add delete icon
+    const iconElement = document.createElement("i");
+    iconElement.classList.add("fas", "fa-xmark", "delete-song");
+    songDiv.appendChild(iconElement);
+
+    // Add click event to play the song
+    songDiv.addEventListener("click", (event) => {
+      if (!event.target.classList.contains("delete-song")) {
+        playSelectedSong(song);
       }
     });
+
+    // Add click event to delete the song
+    iconElement.addEventListener("click", (event) => {
+      event.stopPropagation(); // Prevent the parent click event from firing
+      removeSongFromPlaylist(song, playlist);
+      songDiv.remove();
+    });
+
+    playlistContainer.appendChild(songDiv);
   });
+};
+
+// Function to remove a song from the specified playlist
+const removeSongFromPlaylist = (song, playlist) => {
+  const playlistSongs = playlistSongsMap.get(playlist) || [];
+  const updatedSongs = playlistSongs.filter((s) => s.name !== song.name);
+  playlistSongsMap.set(playlist, updatedSongs);
+};
+
+// Function to add the current song to the active playlist
+const addToActivePlaylist = () => {
+  playlistDivs = document.querySelectorAll(".playlist");
+  const activePlaylist = Array.from(playlistDivs).find((div) =>
+    div.classList.contains("active")
+  );
+
+  if (!activePlaylist) {
+    alert("Please select a playlist before adding songs.");
+    return;
+  }
+
+  addSongToPlaylist(activePlaylist);
+};
+
+// Function to add the current song to the specified playlist
+const addSongToPlaylist = (playlist) => {
+  const currentSong = songs[songIndex];
+  const playlistSongs = playlistSongsMap.get(playlist) || [];
+
+  if (playlistSongs.find((song) => song.name === currentSong.name)) {
+    alert("This song is already in the playlist.");
+    return;
+  }
+
+  playlistSongs.push(currentSong);
+  playlistSongsMap.set(playlist, playlistSongs);
+  showPlaylistSongs(playlist);
+};
+
+// DOMContentLoaded event listener
+document.addEventListener("DOMContentLoaded", () => {
+  playlistDivs = document.querySelectorAll(".playlist");
+
+  // Event listeners
+  allPlayListEl.addEventListener("click", handlePlaylistClick);
+  addToPlaylistBtn.addEventListener("click", addToActivePlaylist);
+});
+
+// Toggle Dark/Light Mode
+// Theme constants
+const darkTheme = "dark";
+const lightTheme = "light";
+
+// Apply styles based on the theme
+function setStyle(theme) {
+  const isDark = theme === darkTheme;
+  nav.style.backgroundColor = isDark
+    ? "rgb(0 0 0 / 50%)"
+    : "rgb(255 255 255 / 50%)";
+  footer.style.backgroundColor = isDark
+    ? "rgb(0 0 0 / 50%)"
+    : "rgb(255 255 255 / 50%)";
+
+  toggleIcon.children[0].textContent = isDark ? "Dark Mode" : "Light Mode";
+  toggleIcon.children[1].classList.replace(
+    isDark ? "fa-sun" : "fa-moon",
+    isDark ? "fa-moon" : "fa-sun"
+  );
+}
+
+// Switch theme based on the toggle switch state
+function switchTheme(event) {
+  const theme = event.target.checked ? darkTheme : lightTheme;
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+  setStyle(theme);
+}
+
+// Add event listener for theme toggle switch
+toggleSwitch.addEventListener("change", switchTheme);
+
+// Check local storage for the current theme and apply it
+const currentTheme = localStorage.getItem("theme");
+if (currentTheme) {
+  const theme = currentTheme === darkTheme ? darkTheme : lightTheme;
+  document.documentElement.setAttribute("data-theme", theme);
+  toggleSwitch.checked = theme === darkTheme;
+  setStyle(theme);
+}
+
+// Testing Ideas
+document.addEventListener("DOMContentLoaded", () => {
+  const containers = {
+    genreContainerElement: document.querySelector(".genre-container"),
+    playerContainerElement: document.querySelector(".player-container"),
+    playlistContainerElement: document.querySelector(".playlist-container"),
+  };
+
+  const buttons = {
+    activateGenreContainer: document.getElementById("genre-container-slide"),
+    activatePlayerContainer: document.getElementById("player-container-slide"),
+    activatePlaylistContainer: document.getElementById(
+      "playlist-container-slide"
+    ),
+  };
+
+  function showContainer(containerToShow) {
+    Object.keys(containers).forEach((key) => {
+      const container = containers[key];
+      container.style.display = "none";
+      if (key === containerToShow) {
+        container.style.display = "flex";
+      }
+    });
+  }
+
+  buttons.activateGenreContainer.addEventListener("click", () =>
+    showContainer("genreContainerElement")
+  );
+  buttons.activatePlayerContainer.addEventListener("click", () =>
+    showContainer("playerContainerElement")
+  );
+  buttons.activatePlaylistContainer.addEventListener("click", () =>
+    showContainer("playlistContainerElement")
+  );
 });

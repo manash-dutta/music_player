@@ -9,15 +9,28 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav></nav>
+  <!-- Dark Mode Switch -->
+  <div class="theme-switch-wrapper">
+    <span id="toggle-icon">
+        <span class="toggle-text">Light Mode</span>
+        <i class="fas fa-sun"></i>
+    </span>
+    <label class="theme-switch">
+        <input type="checkbox">
+        <div class="slider round"></div>
+    </label>
+ </div>
+  <nav id="nav">
+    <a href="#">MD Player</a>
+  </nav>
   <main>
-    <section class="genre-container">
+    <section class="genre-container container visible">
       <select name="genres" class="select-genre" id="select-genre">
         <!-- <option class="genres" value="all">All</option> -->
       </select>
       <div class="filtered-songs" id="filtered-songs"></div>
     </section>
-    <section class="player-container">
+    <section class="player-container container">
       <!-- Songs -->
        <div class="img-container">
         <img src="./images/runway-1.jpg" id="album-cover" alt="Album Art">
@@ -40,7 +53,7 @@
           <i class="fas fa-forward" id="next" title="Next"></i>
         </div>
    </section>
-    <section class="playlist-container">
+    <section class="playlist-container container">
       <div class="create-playlist">
         <form class="new-playlist" id="new-playlist">
           <input type="text" id="playlist-input" placeholder="Enter playlist name...">
@@ -55,8 +68,12 @@
       </div>
     </section>
   </main>
-  <footer></footer>
-
+  <footer id="footer">
+    <button id="genre-container-slide">Genre</button>
+    <button id="player-container-slide">Player</button>
+    <button id="playlist-container-slide">Playlists</button>
+  </footer>
+    
   <script src="script.js"></script>
 </body>
 </html>

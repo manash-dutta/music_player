@@ -93,7 +93,6 @@ main {
   flex: 1;
   overflow: scroll;
   transition: transform 1s ease-in-out, opacity 0.5s ease-in-out;
-  /* flex-direction: column; */
 }
 
 /* Basic styling for select element */
@@ -120,7 +119,6 @@ main {
 
 /* Custom styling for the dropdown arrow */
 .select-genre {
-  /* background-image: url('arrow.png'); */
   background-position: right center;
   background-repeat: no-repeat;
   padding-right: 1.875rem;

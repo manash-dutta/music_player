@@ -413,39 +413,37 @@ if (currentTheme) {
   setStyle(theme);
 }
 
-// Testing Ideas
-document.addEventListener("DOMContentLoaded", () => {
-  const containers = {
-    genreContainerElement: document.querySelector(".genre-container"),
-    playerContainerElement: document.querySelector(".player-container"),
-    playlistContainerElement: document.querySelector(".playlist-container"),
-  };
+// Footer navigation to change containers for mobile devices
+const containers = {
+  genreContainerElement: document.querySelector(".genre-container"),
+  playerContainerElement: document.querySelector(".player-container"),
+  playlistContainerElement: document.querySelector(".playlist-container"),
+};
 
-  const buttons = {
-    activateGenreContainer: document.getElementById("genre-container-slide"),
-    activatePlayerContainer: document.getElementById("player-container-slide"),
-    activatePlaylistContainer: document.getElementById(
-      "playlist-container-slide"
-    ),
-  };
+const buttons = {
+  activateGenreContainer: document.getElementById("genre-container-slide"),
+  activatePlayerContainer: document.getElementById("player-container-slide"),
+  activatePlaylistContainer: document.getElementById(
+    "playlist-container-slide"
+  ),
+};
 
-  function showContainer(containerToShow) {
-    Object.keys(containers).forEach((key) => {
-      const container = containers[key];
-      container.style.display = "none";
-      if (key === containerToShow) {
-        container.style.display = "flex";
-      }
-    });
-  }
+function showContainer(containerToShow) {
+  Object.keys(containers).forEach((key) => {
+    const container = containers[key];
+    container.style.display = "none";
+    if (key === containerToShow) {
+      container.style.display = "flex";
+    }
+  });
+}
 
-  buttons.activateGenreContainer.addEventListener("click", () =>
-    showContainer("genreContainerElement")
-  );
-  buttons.activatePlayerContainer.addEventListener("click", () =>
-    showContainer("playerContainerElement")
-  );
-  buttons.activatePlaylistContainer.addEventListener("click", () =>
-    showContainer("playlistContainerElement")
-  );
-});
+buttons.activateGenreContainer.addEventListener("click", () =>
+  showContainer("genreContainerElement")
+);
+buttons.activatePlayerContainer.addEventListener("click", () =>
+  showContainer("playerContainerElement")
+);
+buttons.activatePlaylistContainer.addEventListener("click", () =>
+  showContainer("playlistContainerElement")
+);

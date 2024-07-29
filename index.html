@@ -24,13 +24,11 @@
     <a href="#">MD Player</a>
   </nav>
   <main>
-    <section class="genre-container container visible">
-      <select name="genres" class="select-genre" id="select-genre">
-        <!-- <option class="genres" value="all">All</option> -->
-      </select>
+    <section class="genre-container visible">
+      <select name="genres" class="select-genre" id="select-genre"></select>
       <div class="filtered-songs" id="filtered-songs"></div>
     </section>
-    <section class="player-container container">
+    <section class="player-container">
       <!-- Songs -->
        <div class="img-container">
         <img src="./images/runway-1.jpg" id="album-cover" alt="Album Art">
@@ -53,7 +51,7 @@
           <i class="fas fa-forward" id="next" title="Next"></i>
         </div>
    </section>
-    <section class="playlist-container container">
+    <section class="playlist-container">
       <div class="create-playlist">
         <form class="new-playlist" id="new-playlist">
           <input type="text" id="playlist-input" placeholder="Enter playlist name...">
